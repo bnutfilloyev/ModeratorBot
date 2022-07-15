@@ -5,6 +5,6 @@ from data.config import IP
 client = MongoClient(IP)
 storage = MongoStorage()
 
-database = client.bot_name
+database = client.moderator
 
 LANG_STORAGE = database['lang_storage']
