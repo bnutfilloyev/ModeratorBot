@@ -8,3 +8,4 @@ storage = MongoStorage()
 database = client.moderator
 
 LANG_STORAGE = database['lang_storage']
+USERS = database['users']
