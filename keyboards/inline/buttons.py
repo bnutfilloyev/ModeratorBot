@@ -14,7 +14,7 @@ async def plans_button():
         inline_keyboard=[
             [
                 types.InlineKeyboardButton(text=_("7 kun"), callback_data=plan_button.new(method='weekly', days=7)),
-                types.InlineKeyboardButton(text=_("30 kun"), callback_data=plan_button.new(method='weekly', days=30))
+                types.InlineKeyboardButton(text=_("30 kun"), callback_data=plan_button.new(method='monthly', days=30))
             ],
         ]
     )
