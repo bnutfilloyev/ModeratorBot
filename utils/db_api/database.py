@@ -1,4 +1,4 @@
-from utils.db_api.mongo import USERS
+from utils.db_api.mongo import USERS, GROUPS
 
 
 class Users:
@@ -72,3 +72,28 @@ class Users:
         """
         USERS.update_one({'user_id': user_id},
                          {'$set': {'status': status}})
+
+
+class Groups:
+    def get_groups(self):
+        """
+        Return groups list
+        """
+        for group in GROUPS.find():
+            yield group
+
+    async def set_groups(self, chat_id, group_name):
+        """
+        Set groups for user
+        """
+        GROUPS.update_one({'chat_id': chat_id},
+                          {'$set': {'group_name': group_name}}, upsert=True)
+
+    async def get_group_name(self, chat_id):
+        """
+        Return group name
+        """
+        if GROUPS.find_one({'chat_id': chat_id}) is None:
+            return
+
+        return GROUPS.find_one({'chat_id': chat_id}).get('group_name')
