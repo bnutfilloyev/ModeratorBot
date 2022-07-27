@@ -7,7 +7,7 @@ from middlewares import i18n
 _ = i18n.lazy_gettext
 plan_button = CallbackData('plan', 'method', 'days')
 pay_button = CallbackData('payment', 'method')
-group_name_button = CallbackData('group_name', 'group_id')
+group_name_button = CallbackData('group_name', 'chat_id')
 
 
 async def plans_button():
@@ -33,5 +33,5 @@ async def group_button(group_list):
     markup = types.InlineKeyboardMarkup()
     for group in group_list:
         markup.add(types.InlineKeyboardButton(text=group['group_name'],
-                                              callback_data=group_name_button.new(group_id=group['chat_id'])))
+                                              callback_data=group_name_button.new(chat_id=group['chat_id'])))
     return markup

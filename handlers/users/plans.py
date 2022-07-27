@@ -16,9 +16,3 @@ async def plan_button_callback(call: types.CallbackQuery, callback_data: dict, s
         data['days'] = callback_data['days']
     await call.message.edit_text(text=_(texts['payment_method']).format(day=callback_data.get('days')))
     await call.message.edit_reply_markup(reply_markup=await pamment_button())
-
-
-# @dp.callback_query_handler(pay_button.filter())
-# async def pamment_button_callback(call: types.CallbackQuery, callback_data: dict, state: FSMContext):
-#     async with state.proxy() as data:
-#         await call.message.edit_text(data['method'] + '\n' + data['days'])

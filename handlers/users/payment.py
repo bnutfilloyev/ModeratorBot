@@ -26,7 +26,7 @@ async def pamment_button_callback(call: types.CallbackQuery, callback_data: dict
     async with state.proxy() as data:
         data['pay_method'] = callback_data['method']
         token, prices = await payment(data['pay_method'], data['method'])
-    print(token, prices, sep='\n')
+
     await bot.send_invoice(
         call.message.chat.id,
         title="Bot bilan pul to'lash uchun",
@@ -54,15 +54,11 @@ async def got_payment(message: types.Message, state: FSMContext):
     user = Users()
 
     async with state.proxy() as data:
-        user.update_user(message.chat.id, data['pay_method'], data['days'])
+        await user.update_user(message.chat.id, data['pay_method'], data['days'], data['chat_id'])
+        await bot.restrict_chat_member(data['chat_id'], message.chat.id, can_send_messages=True)
 
-    await bot.send_message(
-        message.chat.id,
-        'Sizdan {} {} olib qolindi) Xaridingiz uchun rahmat'.format(
-            message.successful_payment.total_amount / 100, message.successful_payment.currency),
-        parse_mode='Markdown'
-    )
-
-    if user.have_chat_id(message.chat.id):
-        for chat_id in user.get_chat_id(message.chat.id):
-            await bot.restrict_chat_member(chat_id, message.chat.id, can_send_messages=True)
+        await message.answer(
+            'Sizdan {} {} olib qolindi) Xaridingiz uchun rahmat'.format(
+                message.successful_payment.total_amount / 100, message.successful_payment.currency),
+            parse_mode='Markdown'
+        )

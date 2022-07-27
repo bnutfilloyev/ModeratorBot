@@ -9,46 +9,39 @@ class Users:
         for user in USERS.find():
             yield user
 
-    def update_user(self, user_id, pay_method, days):
+    async def get_user(self, **kwargs):
+        """
+        Return user
+        """
+        return USERS.find_one(kwargs)
+
+    async def set_base_info(self, **kwargs):
+        """
+        Set base info
+        """
+        USERS.update_one({'user_id': kwargs.get('user_id'), 'chat_id': kwargs.get('chat_id')},
+                         {'$set': {'fullName': kwargs.get('name'),
+                                   'status': 'deactive',
+                                   'days': 0}}, upsert=True)
+
+    async def update_user(self, user_id, pay_method, days, chat_id):
         """
         Update user status
         """
-        if USERS.find_one({'user_id': user_id}).get('days') is None:
+        if USERS.find_one({'user_id': user_id, 'chat_id': chat_id}).get('days') is None:
             USERS.update_one({'user_id': user_id},
-                             {'$set': {'days': int(days), 'method': pay_method, 'status': 'active'}})
+                             {'$set': {'days': int(days),
+                                       'method': pay_method,
+                                       'status': 'active'}}, upsert=True)
             return
 
-        old_days = USERS.find_one({'user_id': user_id}).get('days')
+        old_days = USERS.find_one({'user_id': user_id, 'chat_id': chat_id}).get('days')
         USERS.update_one({'user_id': user_id},
-                         {'$set': {'days': int(days) + int(old_days), 'method': pay_method, 'status': 'active'}})
+                         {'$set': {'days': int(days) + int(old_days),
+                                   'method': pay_method,
+                                   'status': 'active',
+                                   'chat_id': chat_id}})
         return
-
-    def get_chat_id(self, user_id):
-        """
-        Return chat id
-        """
-        for chat_id in USERS.find_one({'user_id': user_id}).get('chat_id'):
-            yield chat_id
-
-    def have_chat_id(self, user_id):
-        """
-        Return True if user have chat id
-        """
-        if USERS.find_one({'user_id': user_id}) is None:
-            return False
-        if USERS.find_one({'user_id': user_id}).get('chat_id') is None:
-            return False
-        return True
-
-    def have_chat_in_db(self, user_id, chat_id):
-        """
-        Return True if chat in user
-        """
-        if USERS.find_one({'user_id': user_id}).get('chat_id') is None:
-            return False
-        if chat_id in USERS.find_one({'user_id': user_id}).get('chat_id'):
-            return True
-        return False
 
     async def add_chat_id(self, user_id, chat_id):
         """

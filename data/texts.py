@@ -17,4 +17,6 @@ texts = {
     'get_group_id': "Guruh ID ni kiriting.",
 
     'added_group': "Guruh qo'shildi!",
+
+    'group_not_found': "Guruh topilmadi!",
 }
