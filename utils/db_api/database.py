@@ -50,14 +50,13 @@ class Users:
         USERS.update_one({'user_id': user_id},
                          {'$push': {'chat_id': chat_id}}, upsert=True)
 
-    async def get_user_status(self, user_id):
+    async def get_user_status(self, user_id, chat_id):
         """
         Return user status
         """
-        if USERS.find_one({'user_id': user_id}) is None:
+        if USERS.find_one({'user_id': user_id, 'chat_id': chat_id}) is None:
             return
-
-        return USERS.find_one({'user_id': user_id}).get('status')
+        return USERS.find_one({'user_id': user_id, 'chat_id': chat_id}).get('status')
 
     async def update_status(self, user_id, status):
         """
