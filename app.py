@@ -12,9 +12,9 @@ from utils.set_bot_commands import set_default_commands
 
 async def scheduler():
     aioschedule.every().day.at("00:00").do(check_user_exists)
-    # aioschedule.every().day.at("00:00").do(send_total_amount_to_admins)
+    aioschedule.every().day.at("00:00").do(send_total_amount_to_admins)
     # aioschedule.every().second.do(check_user_exists)
-    aioschedule.every().second.do(send_total_amount_to_admins)
+    # aioschedule.every().second.do(send_total_amount_to_admins)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)

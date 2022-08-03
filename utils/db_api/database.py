@@ -102,7 +102,7 @@ class Payments:
                              'chat_id': chat_id,
                              'method': pay_method,
                              'amount': amount,
-                             'date': datetime.now()})
+                             'date': datetime.now().strftime('%Y-%m-%d')})
 
     async def get_daily_amount(self, chat_id):
         """
@@ -111,7 +111,7 @@ class Payments:
         amount = 0
         if PAYMENTS.find_one({'chat_id': chat_id}) is None:
             return amount
-
         for payment in PAYMENTS.find(
-                {'chat_id': chat_id, 'date': {'$gte': datetime.now() - timedelta(days=1)}}):
+                {'chat_id': chat_id, 'date': {'$gte': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')}}):
             amount += int(payment.get('amount'))
+        return amount

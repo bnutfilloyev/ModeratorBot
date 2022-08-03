@@ -59,7 +59,7 @@ async def got_payment(message: types.Message, state: FSMContext):
         await bot.restrict_chat_member(data['chat_id'], message.chat.id, can_send_messages=True)
 
         await pay.add_payment(user_id=message.from_user.id,
-                              chat_id=message.chat.id,
+                              chat_id=data['chat_id'],
                               pay_method=data['pay_method'],
                               amount=message.successful_payment.total_amount / 100)
 
