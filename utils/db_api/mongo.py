@@ -10,3 +10,4 @@ database = client.moderator
 LANG_STORAGE = database['lang_storage']
 USERS = database['users']
 GROUPS = database['groups']
+PAYMENTS = database['payments']
