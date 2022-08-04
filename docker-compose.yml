@@ -9,7 +9,7 @@ services:
             context: .
         working_dir: "/usr/src/app/${BOT_NAME:-tg_bot}"
         volumes:
-            - .:/usr/src/app/${BOT_NAME:-tg_bot}
+            -     botdata:/data
         command: python3 -m app
         restart: always
         env_file:
@@ -31,9 +31,12 @@ services:
         environment:
             MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
             MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-
+            MONGODB_DATA_DIR: /data/db
+            MONDODB_LOG_DIR: /dev/null
         volumes:
-            - ./mongo:/data/db
+            - mongodbdata:/data/db
+        networks:
+            - tg_bot
 
     mongo-express:
         image: mongo-express
@@ -48,7 +51,15 @@ services:
             ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27018/
         depends_on:
             - mongo
+        networks:
+            - tg_bot
 
 networks:
     tg_bot:
         driver: bridge
+
+volumes:
+    mongodbdata:
+        driver: local
+    botdata:
+        driver: local
