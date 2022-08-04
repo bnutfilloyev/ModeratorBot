@@ -1,4 +1,6 @@
-from utils.db_api.mongo import USERS, GROUPS
+from datetime import datetime, timedelta
+
+from utils.db_api.mongo import USERS, GROUPS, PAYMENTS
 
 
 class Users:
@@ -50,14 +52,13 @@ class Users:
         USERS.update_one({'user_id': user_id},
                          {'$push': {'chat_id': chat_id}}, upsert=True)
 
-    async def get_user_status(self, user_id):
+    async def get_user_status(self, user_id, chat_id):
         """
         Return user status
         """
-        if USERS.find_one({'user_id': user_id}) is None:
+        if USERS.find_one({'user_id': user_id, 'chat_id': chat_id}) is None:
             return
-
-        return USERS.find_one({'user_id': user_id}).get('status')
+        return USERS.find_one({'user_id': user_id, 'chat_id': chat_id}).get('status')
 
     async def update_status(self, user_id, status):
         """
@@ -90,3 +91,27 @@ class Groups:
             return
 
         return GROUPS.find_one({'chat_id': chat_id}).get('group_name')
+
+
+class Payments:
+    async def add_payment(self, user_id, chat_id, pay_method, amount):
+        """
+        Add payment
+        """
+        PAYMENTS.insert_one({'user_id': user_id,
+                             'chat_id': chat_id,
+                             'method': pay_method,
+                             'amount': amount,
+                             'date': datetime.now().strftime('%Y-%m-%d')})
+
+    async def get_daily_amount(self, chat_id):
+        """
+        Return daily amount
+        """
+        amount = 0
+        if PAYMENTS.find_one({'chat_id': chat_id}) is None:
+            return amount
+        for payment in PAYMENTS.find(
+                {'chat_id': chat_id, 'date': {'$gte': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')}}):
+            amount += int(payment.get('amount'))
+        return amount

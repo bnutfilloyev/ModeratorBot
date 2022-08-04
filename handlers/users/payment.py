@@ -6,7 +6,7 @@ from data.config import CLICK_PROVIDER_TOKEN, PAYME_PROVIDER_TOKEN
 from keyboards.inline.buttons import pay_button
 from loader import dp, bot
 
-from utils.db_api.database import Users
+from utils.db_api.database import Users, Payments
 
 
 async def payment(pay_method, plan_method):
@@ -52,13 +52,21 @@ async def checkout(pre_checkout_query: types.PreCheckoutQuery):
 @dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
 async def got_payment(message: types.Message, state: FSMContext):
     user = Users()
+    pay = Payments()
 
     async with state.proxy() as data:
         await user.update_user(message.chat.id, data['pay_method'], data['days'], data['chat_id'])
         await bot.restrict_chat_member(data['chat_id'], message.chat.id, can_send_messages=True)
 
+        await pay.add_payment(user_id=message.from_user.id,
+                              chat_id=data['chat_id'],
+                              pay_method=data['pay_method'],
+                              amount=message.successful_payment.total_amount / 100)
+
+        invite_link = await bot.export_chat_invite_link(data['chat_id'])
         await message.answer(
-            'Sizdan {} {} olib qolindi) Xaridingiz uchun rahmat'.format(
-                message.successful_payment.total_amount / 100, message.successful_payment.currency),
+            'Sizdan {} {} olib qolindi) Xaridingiz uchun rahmat.\n'
+            'Sizdan cheklovlar olib tashlandi. Guruhga qaytish uchun link: {}'.format(
+                message.successful_payment.total_amount / 100, message.successful_payment.currency, invite_link),
             parse_mode='Markdown'
         )
