@@ -9,13 +9,13 @@ services:
             context: .
         working_dir: "/usr/src/app/${BOT_NAME:-tg_bot}"
         volumes:
-            -     botdata:/data
+            - botdata:/data
         command: python3 -m app
         restart: always
         env_file:
             - ".env"
         networks:
-            - tg_bot
+            - backend
         depends_on:
             - mongo
 
@@ -36,7 +36,7 @@ services:
         volumes:
             - mongodbdata:/data/db
         networks:
-            - tg_bot
+            - backend
 
     mongo-express:
         image: mongo-express
@@ -52,10 +52,10 @@ services:
         depends_on:
             - mongo
         networks:
-            - tg_bot
+            - backend
 
 networks:
-    tg_bot:
+    backend:
         driver: bridge
 
 volumes:
