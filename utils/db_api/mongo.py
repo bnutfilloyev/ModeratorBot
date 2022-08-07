@@ -2,17 +2,10 @@ from urllib.parse import quote_plus
 
 from pymongo import MongoClient
 from aiogram.contrib.fsm_storage.mongo import MongoStorage
-from data.config import IP, MONGO_INITDB_ROOT_USERNAME, MONGO_INITDB_ROOT_PASSWORD, PORT
+from data.config import MONGODB_HOSTNAME, MONGO_INITDB_ROOT_USERNAME, MONGO_INITDB_ROOT_PASSWORD, MONGODB_PORT
 
-uri = "mongodb://{}:{}@{}:{}".format(
-    quote_plus(MONGO_INITDB_ROOT_USERNAME),
-    quote_plus(MONGO_INITDB_ROOT_PASSWORD),
-    IP,
-    PORT
-)
-
-print(uri)
-client = MongoClient(uri)
+client = MongoClient("mongodb://{}:{}@{}:{}".format(
+                MONGO_INITDB_ROOT_USERNAME, MONGO_INITDB_ROOT_PASSWORD, MONGODB_HOSTNAME, str(MONGODB_PORT)))
 storage = MongoStorage()
 
 database = client.moderator

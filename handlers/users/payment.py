@@ -11,12 +11,12 @@ from utils.db_api.database import Users, Payments
 
 async def payment(pay_method, plan_method):
     token = CLICK_PROVIDER_TOKEN
-    prices = [types.LabeledPrice(label='7 kunlik', amount=5000000)]
+    prices = [types.LabeledPrice(label='7 kunlik', amount=500000)]
     if pay_method == 'payme':
         token = PAYME_PROVIDER_TOKEN
 
     if plan_method == 'monthly':
-        prices = [types.LabeledPrice(label='30 kunlik', amount=50000000)]
+        prices = [types.LabeledPrice(label='30 kunlik', amount=2000000)]
 
     return token, prices
 
