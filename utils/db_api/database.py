@@ -114,4 +114,6 @@ class Payments:
         for payment in PAYMENTS.find(
                 {'chat_id': chat_id, 'date': {'$gte': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')}}):
             amount += int(payment.get('amount'))
-        return amount
+        return amount / 2
+
+

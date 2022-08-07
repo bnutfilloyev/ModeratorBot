@@ -11,7 +11,6 @@ uri = "mongodb://{}:{}@{}:{}".format(
     PORT
 )
 
-print(uri)
 client = MongoClient(uri)
 storage = MongoStorage()
 
