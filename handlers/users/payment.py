@@ -34,7 +34,7 @@ async def pamment_button_callback(call: types.CallbackQuery, callback_data: dict
         provider_token=token,
         currency='uzs',
         prices=prices,
-        is_flexible=False,  # True If you need to set up Shipping Fee
+        is_flexible=False,
         start_parameter='time-machine-example',
         payload="TARIF UCHUN TOLOVLAR",
     )
@@ -44,7 +44,7 @@ async def pamment_button_callback(call: types.CallbackQuery, callback_data: dict
 async def checkout(pre_checkout_query: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(
         pre_checkout_query.id,
-        ok=True,
+        ok=False,
         error_message="Nimadir xato ketdi, iltimos qayta urinib ko'ring."
     )
 
@@ -64,9 +64,13 @@ async def got_payment(message: types.Message, state: FSMContext):
                               amount=message.successful_payment.total_amount / 100)
 
         invite_link = await bot.export_chat_invite_link(data['chat_id'])
+        join_btn = types.InlineKeyboardMarkup(
+            inline_keyboard=[
+                [types.InlineKeyboardButton(text='Guruhga qaytish', url=invite_link)]
+            ]
+        )
         await message.answer(
             'Sizdan {} {} olib qolindi) Xaridingiz uchun rahmat.\n'
-            'Sizdan cheklovlar olib tashlandi. Guruhga qaytish uchun link: {}'.format(
-                message.successful_payment.total_amount / 100, message.successful_payment.currency, invite_link),
-            parse_mode='Markdown'
-        )
+            'Sizdan cheklovlar olib tashlandi. Guruhga qaytish uchun bosing'.format(
+                message.successful_payment.total_amount / 100, message.successful_payment.currency),
+            reply_markup=join_btn)

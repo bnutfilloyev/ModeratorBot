@@ -76,12 +76,12 @@ class Groups:
         for group in GROUPS.find():
             yield group
 
-    async def set_groups(self, chat_id, group_name):
+    async def set_groups(self, chat_id, group_name, admin_ids):
         """
         Set groups for user
         """
         GROUPS.update_one({'chat_id': chat_id},
-                          {'$set': {'group_name': group_name}}, upsert=True)
+                          {'$set': {'group_name': group_name, 'admin_id': admin_ids}}, upsert=True)
 
     async def get_group_name(self, chat_id):
         """
@@ -115,5 +115,3 @@ class Payments:
                 {'chat_id': chat_id, 'date': {'$gte': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')}}):
             amount += int(payment.get('amount'))
         return amount / 2
-
-
