@@ -1,5 +1,3 @@
-import asyncio
-
 from aiogram import types
 from aiogram.utils.deep_linking import get_start_link
 
@@ -7,7 +5,7 @@ from data.texts import texts
 from filters import IsGroup
 from loader import dp, bot
 
-from middlewares import checker, i18n
+from middlewares import i18n
 from utils.db_api.database import Users
 
 _ = i18n.lazy_gettext
