@@ -42,11 +42,7 @@ async def pamment_button_callback(call: types.CallbackQuery, callback_data: dict
 
 @dp.pre_checkout_query_handler(lambda query: True)
 async def checkout(pre_checkout_query: types.PreCheckoutQuery):
-    await bot.answer_pre_checkout_query(
-        pre_checkout_query.id,
-        ok=False,
-        error_message="Nimadir xato ketdi, iltimos qayta urinib ko'ring."
-    )
+    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 
 @dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
