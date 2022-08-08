@@ -30,7 +30,9 @@ async def pamment_button_callback(call: types.CallbackQuery, callback_data: dict
     await bot.send_invoice(
         call.message.chat.id,
         title="Bot bilan pul to'lash uchun",
-        description='Bu yerda botni descriptioni bo\'lishi mumkin edi',
+        description="Guruhga yozish uchun quyidagi havola orqali pul to’lashingiz mumkin.\n\n"
+                    "To’lov xavfsizligini telegram himoyalaydi. \n\n"
+                    "Barcha xizmatlar litsenziyalangan.",
         provider_token=token,
         currency='uzs',
         prices=prices,
