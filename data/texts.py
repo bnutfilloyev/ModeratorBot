@@ -7,8 +7,8 @@ texts = {
 
     'start_group': "Sizga qanday yordam bera olaman, iltimos menga shaxsiydan yozing!",
 
-    'hello_group': "Assalomu Alaykum! Guruhga xush kelibsiz sizning holatingiz active emas, "
-                   "iltimos quyidagi [havola]({link}) orqali botga o'ting!",
+    'hello_group': "Hurmatli Ishtirokchi, guruhdan foydalanish pullik. "
+                   "Botga o'tib o'zingizga ma'qul tarifni tanlab to'lov qiling va guruhdan foydalaning.\n\n",
 
     'choose_group': "Qo'shilmoqchi bo'lgan guruhni tanlang.",
 

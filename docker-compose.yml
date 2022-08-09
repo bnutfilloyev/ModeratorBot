@@ -2,53 +2,35 @@ version: '3.7'
 
 services:
     bot:
-        image: "${BOT_IMAGE_NAME:-tg_bot-image}"
-        container_name: "${BOT_CONTAINER_NAME:-tg_bot-container}"
-        stop_signal: SIGINT
         build:
             context: .
-        working_dir: "/usr/src/app/${BOT_NAME:-tg_bot}"
-        volumes:
-            - .:/usr/src/app/${BOT_NAME:-tg_bot}
-        command: python3 -m app
-        restart: always
-        env_file:
-            - ".env"
-        networks:
-            - tg_bot
-        depends_on:
-            - mongo
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        container_name: ${BOT_NAME}
+        links:
+            - mongodb
 
-
-    mongo:
-        image: 'mongo:latest'
-        command: mongod --port 27018
-        restart: always
+    mongodb:
+        image: mongo:latest
+        restart: unless-stopped
         ports:
-            - 27018:27018
-        env_file:
-            - ".env"
+            - "27018:27017"
         environment:
             MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
             MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-
+            MONGODB_DATA_DIR: /data/db
+            MONDODB_LOG_DIR: /dev/null
         volumes:
-            - ./mongo:/data/db
-
-    mongo-express:
-        image: mongo-express
-        restart: always
-        ports:
-            - 8081:8081
-        env_file:
-            - ".env"
-        environment:
-            ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-            ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-            ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27018/
-        depends_on:
-            - mongo
-
-networks:
-    tg_bot:
-        driver: bridge
+            - ./mongodb/data:/data/db
+#
+#    mongo-express:
+#        image: mongo-express:latest
+#        restart: always
+#        env_file:
+#            - .env
+#        ports:
+#            - 8081:8081
+#        environment:
+#            ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+#            ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+#            ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/

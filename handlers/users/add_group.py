@@ -28,8 +28,17 @@ async def get_group_name(message: Message, state: FSMContext):
 
 @dp.message_handler(IsPrivate(), state=AddGroup.GetGroupId)
 async def get_group_id(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['group_id'] = message.text
+    await message.answer("AdminID ni yuboring.")
+    await AddGroup.GetAdminIds.set()
+
+
+@dp.message_handler(IsPrivate(), state=AddGroup.GetAdminIds)
+async def get_admin_ids(message: Message, state: FSMContext):
     groups = Groups()
     async with state.proxy() as data:
-        await groups.set_groups(group_name=data['group_name'], chat_id=message.text)
+        data['admin_ids'] = message.text
+        await groups.set_groups(chat_id=data['group_id'], admin_ids=data['admin_ids'], group_name=data['group_name'])
     await message.answer(_(texts['added_group']))
     await state.finish()
