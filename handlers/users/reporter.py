@@ -11,5 +11,8 @@ async def reporter(msg: types.Message):
 
 
 @dp.callback_query_handler(report_button.filter())
-async def report(call: types.CallbackQuery):
-    await call.message.answer(call.data)
+async def report(call: types.CallbackQuery, callback_data: dict):
+    if callback_data['plan'] == 'monthly':
+        await call.message.answer("Oylik hisobotlar")
+    if callback_data['plan'] == 'yearly':
+        await call.message.answer("Yillik hisobotlar")
