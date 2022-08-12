@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.deep_linking import get_start_link
@@ -21,10 +23,12 @@ async def checker_handler(message: types.Message):
             return
 
     await message.delete()
-    msg = MESSAGE.find_one({'chat_id': str(message.chat.id)})
-    print(msg)
-    if msg is not None:
-        await bot.delete_message(msg['chat_id'], msg['message_id'])
+    for msg in MESSAGE.find({'chat_id': str(message.chat.id)}):
+        print(msg)
+        try:
+            await bot.delete_message(msg['chat_id'], msg['message_id'])
+        except Exception as e:
+            logging.error(e)
         MESSAGE.delete_one({'chat_id': str(message.chat.id)})
 
     deep_link = await get_start_link(message.chat.id, encode=True)
