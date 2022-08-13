@@ -25,7 +25,7 @@ async def plans_button():
 async def pamment_button(method_list=METHODS):
     markup = types.InlineKeyboardMarkup()
     for method in method_list:
-        markup.add(types.InlineKeyboardButton(text=method_list[method], callback_data=pay_button.new(method=method)))
+        markup.insert(types.InlineKeyboardButton(text=method_list[method], callback_data=pay_button.new(method=method)))
     return markup
 
 
