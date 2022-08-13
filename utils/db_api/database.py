@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta
 
 from utils.db_api.mongo import USERS, GROUPS, PAYMENTS
@@ -83,6 +84,12 @@ class Groups:
         GROUPS.update_one({'chat_id': chat_id},
                           {'$set': {'group_name': group_name, 'admin_id': admin_ids}}, upsert=True)
 
+    async def remove_group(self, chat_id):
+        """
+        Remove group
+        """
+        GROUPS.delete_one({'chat_id': chat_id})
+
     async def get_group_name(self, chat_id):
         """
         Return group name
@@ -115,3 +122,4 @@ class Payments:
                 {'chat_id': chat_id, 'date': {'$gte': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')}}):
             amount += int(payment.get('amount'))
         return amount / 2
+

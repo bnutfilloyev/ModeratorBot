@@ -10,9 +10,11 @@ async def reporter(msg: types.Message):
     await msg.answer("Hisobotlarni ko'rish uchun bosing.", reply_markup=await report_btn())
 
 
-@dp.callback_query_handler(report_button.filter())
-async def report(call: types.CallbackQuery, callback_data: dict):
-    if callback_data['plan'] == 'monthly':
-        await call.message.answer("Oylik hisobotlar")
-    if callback_data['plan'] == 'yearly':
-        await call.message.answer("Yillik hisobotlar")
+@dp.callback_query_handler(report_button.filter(plan='monthly'))
+async def report(call: types.CallbackQuery):
+    await call.message.answer("Oylik hisobotlar")
+
+
+@dp.callback_query_handler(report_button.filter(plan='yearly'))
+async def report(call: types.CallbackQuery):
+    await call.message.answer("Yillik hisobotlar")

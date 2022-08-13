@@ -8,6 +8,9 @@ from loader import dp, bot
 
 from utils.db_api.database import Users, Payments
 
+user = Users()
+pay = Payments()
+
 
 async def payment(pay_method, plan_method):
     token = CLICK_PROVIDER_TOKEN
@@ -49,9 +52,6 @@ async def checkout(pre_checkout_query: types.PreCheckoutQuery):
 
 @dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
 async def got_payment(message: types.Message, state: FSMContext):
-    user = Users()
-    pay = Payments()
-
     async with state.proxy() as data:
         await user.update_user(message.chat.id, data['pay_method'], data['days'], data['chat_id'])
         await bot.restrict_chat_member(data['chat_id'], message.chat.id, can_send_messages=True)

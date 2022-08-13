@@ -12,11 +12,12 @@ from utils.db_api.database import Groups, Users
 
 _ = i18n.lazy_gettext
 
+groups = Groups()
+users = Users()
+
 
 @dp.message_handler(IsPrivate(), CommandStart())
 async def bot_start(message: types.Message, state: FSMContext):
-    groups = Groups()
-    users = Users()
     args = message.get_args()
     await message.answer(_(texts['welcome']))
 
@@ -41,7 +42,6 @@ async def bot_start(message: types.Message, state: FSMContext):
 
 @dp.callback_query_handler(group_name_button.filter())
 async def group_name_button_callback(call: types.CallbackQuery, callback_data: dict, state: FSMContext):
-    users = Users()
     async with state.proxy() as data:
         data['chat_id'] = callback_data['chat_id']
 

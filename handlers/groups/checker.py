@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.deep_linking import get_start_link
@@ -9,11 +11,12 @@ from loader import dp, bot
 from utils.db_api.database import Users
 from utils.db_api.mongo import MESSAGE
 
+users = Users()
+
 
 @dp.message_handler(IsGroup())
 async def checker_handler(message: types.Message):
-    user = Users()
-    if await user.get_user_status(message.from_user.id, str(message.chat.id)) == 'active':
+    if await users.get_user_status(message.from_user.id, str(message.chat.id)) == 'active':
         return
 
     for user in await bot.get_chat_administrators(message.chat.id):
@@ -21,10 +24,12 @@ async def checker_handler(message: types.Message):
             return
 
     await message.delete()
-    msg = MESSAGE.find_one({'chat_id': str(message.chat.id)})
-    print(msg)
-    if msg is not None:
-        await bot.delete_message(msg['chat_id'], msg['message_id'])
+    for msg in MESSAGE.find({'chat_id': str(message.chat.id)}):
+        print(msg)
+        try:
+            await bot.delete_message(msg['chat_id'], msg['message_id'])
+        except Exception as e:
+            logging.error(e)
         MESSAGE.delete_one({'chat_id': str(message.chat.id)})
 
     deep_link = await get_start_link(message.chat.id, encode=True)
