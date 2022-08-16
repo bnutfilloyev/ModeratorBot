@@ -11,15 +11,18 @@ group_name_button = CallbackData('group_name', 'chat_id')
 report_button = CallbackData('report', 'plan')
 
 
-async def plans_button():
-    return types.InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                types.InlineKeyboardButton(text=_("7 kun"), callback_data=plan_button.new(method='weekly', days=7)),
-                types.InlineKeyboardButton(text=_("30 kun"), callback_data=plan_button.new(method='monthly', days=30))
-            ]
+async def plans_button(free_plan=False):
+    markup = types.InlineKeyboardMarkup(inline_keyboard=[
+        [
+            types.InlineKeyboardButton(text=_("1️⃣ kun"), callback_data=plan_button.new(method='daily', days=1)),
+            types.InlineKeyboardButton(text=_("7️⃣ kun"), callback_data=plan_button.new(method='weekly', days=7)),
+            types.InlineKeyboardButton(text=_("3️⃣0️⃣ kun"), callback_data=plan_button.new(method='monthly', days=30))
         ]
-    )
+    ])
+
+    if free_plan:
+        markup.insert(types.InlineKeyboardButton(text="⭐️ Bepul", callback_data=plan_button.new(method='free', days=1)))
+    return markup
 
 
 async def pamment_button(method_list=METHODS):

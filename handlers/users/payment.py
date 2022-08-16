@@ -1,6 +1,5 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import ContentTypes
 
 from data.config import CLICK_PROVIDER_TOKEN, PAYME_PROVIDER_TOKEN
 from keyboards.inline.buttons import pay_button
@@ -14,18 +13,43 @@ pay = Payments()
 
 async def payment(pay_method, plan_method):
     token = CLICK_PROVIDER_TOKEN
-    prices = [types.LabeledPrice(label='7 kunlik', amount=500000)]
+    prices = [types.LabeledPrice(label='1 kunlik', amount=200000)]
+
     if pay_method == 'payme':
         token = PAYME_PROVIDER_TOKEN
 
     if plan_method == 'monthly':
         prices = [types.LabeledPrice(label='30 kunlik', amount=2000000)]
 
+    if plan_method == 'daily':
+        prices = [types.LabeledPrice(label='7 kunlik', amount=700000)]
+
     return token, prices
 
 
+@dp.callback_query_handler(pay_button.filter(method='verify'))
+async def pay_button_callback(call: types.CallbackQuery, state: FSMContext):
+    async with state.proxy() as data:
+        await user.update_user(call.from_user.id, data['method'], data['days'], data['chat_id'])
+        print("Message ID: ", call.from_user.id)
+        print("Chat ID: ", data['chat_id'])
+        await bot.restrict_chat_member(data['chat_id'], call.from_user.id, can_send_messages=True)
+        print("Working ... 1")
+        invite_link = await bot.export_chat_invite_link(data['chat_id'])
+        join_btn = types.InlineKeyboardMarkup(
+            inline_keyboard=[
+                [types.InlineKeyboardButton(text='Guruhga qaytish', url=invite_link)]
+            ]
+        )
+        print("Working ... 2")
+        await call.message.edit_text(text="Tabriklaymiz, guruhga qaytishingiz mumkin!🥳")
+        print("Working ... 3")
+        await call.message.edit_reply_markup(reply_markup=join_btn)
+        print("Working ... 4")
+
+
 @dp.callback_query_handler(pay_button.filter())
-async def pamment_button_callback(call: types.CallbackQuery, callback_data: dict, state: FSMContext):
+async def payment_button_callback(call: types.CallbackQuery, callback_data: dict, state: FSMContext):
     async with state.proxy() as data:
         data['pay_method'] = callback_data['method']
         token, prices = await payment(data['pay_method'], data['method'])
@@ -50,7 +74,7 @@ async def checkout(pre_checkout_query: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 
-@dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
+@dp.message_handler(content_types=types.ContentTypes.SUCCESSFUL_PAYMENT)
 async def got_payment(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         await user.update_user(message.chat.id, data['pay_method'], data['days'], data['chat_id'])
