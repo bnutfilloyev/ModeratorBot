@@ -10,6 +10,7 @@ from states.States import AddGroup
 from utils.db_api.database import Groups
 
 _ = i18n.lazy_gettext
+groups = Groups()
 
 
 @dp.message_handler(IsPrivate(), Command('addgroup'))
@@ -36,7 +37,6 @@ async def get_group_id(message: Message, state: FSMContext):
 
 @dp.message_handler(IsPrivate(), state=AddGroup.GetAdminIds)
 async def get_admin_ids(message: Message, state: FSMContext):
-    groups = Groups()
     async with state.proxy() as data:
         data['admin_ids'] = message.text
         await groups.set_groups(chat_id=data['group_id'], admin_ids=data['admin_ids'], group_name=data['group_name'])

@@ -5,3 +5,7 @@ class AddGroup(StatesGroup):
     GetGroupName = State()
     GetGroupId = State()
     GetAdminIds = State()
+
+
+class RemoveGroup(StatesGroup):
+    GetGroupName = State()
