@@ -31,6 +31,11 @@ class Users:
         """
         Update user status
         """
+        if pay_method == 'free':
+            USERS.update_one({'user_id': user_id, 'chat_id': chat_id},
+                             {'$set': {'use_free_plan': False, 'days': int(days)}})
+            return
+
         if USERS.find_one({'user_id': user_id, 'chat_id': chat_id}).get('days') is None:
             USERS.update_one({'user_id': user_id},
                              {'$set': {'days': int(days),
@@ -67,6 +72,14 @@ class Users:
         """
         USERS.update_one({'user_id': user_id},
                          {'$set': {'status': status}})
+
+    async def use_free_plan(self, user_id, chat_id):
+        """
+        Use free plan
+        """
+        if USERS.find_one({'user_id': user_id, 'chat_id': chat_id}) is None:
+            return True
+        return USERS.find_one({'user_id': user_id, 'chat_id': chat_id}).get('use_free_plan', True)
 
 
 class Groups:
@@ -122,4 +135,3 @@ class Payments:
                 {'chat_id': chat_id, 'date': {'$gte': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')}}):
             amount += int(payment.get('amount'))
         return amount / 2
-

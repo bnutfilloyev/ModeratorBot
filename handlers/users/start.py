@@ -22,7 +22,7 @@ async def bot_start(message: types.Message, state: FSMContext):
     await message.answer(_(texts['welcome']))
 
     if not args:
-        await message.reply(texts['choose_group'], reply_markup=await group_button(groups.get_groups()))
+        await message.answer(texts['choose_group'], reply_markup=await group_button(groups.get_groups()))
         return
 
     payload = decode_payload(args)
@@ -31,13 +31,15 @@ async def bot_start(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['chat_id'] = payload
 
-    if group_name is not None:
-        if await users.get_user(user_id=message.from_user.id, chat_id=payload) is None:
-            await users.set_base_info(user_id=message.from_user.id, chat_id=payload, name=message.from_user.full_name)
-
-        await message.answer(_(texts['choose_plan']), reply_markup=await plans_button())
+    if group_name is None:
+        await message.reply(texts['group_not_found'])
         return
-    await message.reply(texts['group_not_found'])
+
+    if await users.get_user(user_id=message.from_user.id, chat_id=payload) is None:
+        await users.set_base_info(user_id=message.from_user.id, chat_id=payload, name=message.from_user.full_name)
+
+    free_plan = await users.use_free_plan(user_id=message.from_user.id, chat_id=payload)
+    await message.answer(_(texts['choose_plan']), reply_markup=await plans_button(free_plan))
 
 
 @dp.callback_query_handler(group_name_button.filter())
@@ -50,4 +52,5 @@ async def group_name_button_callback(call: types.CallbackQuery, callback_data: d
                                   chat_id=callback_data['chat_id'],
                                   name=call.from_user.full_name)
 
-    await call.message.edit_text(text=_(texts['choose_plan']), reply_markup=await plans_button())
+    free_plan = await users.use_free_plan(user_id=call.from_user.id, chat_id=callback_data['chat_id'])
+    await call.message.edit_text(text=_(texts['choose_plan']), reply_markup=await plans_button(free_plan))

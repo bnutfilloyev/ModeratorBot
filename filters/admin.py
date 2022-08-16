@@ -1,5 +1,3 @@
-import typing
-
 from aiogram.dispatcher.filters import BoundFilter
 
 from data import config
