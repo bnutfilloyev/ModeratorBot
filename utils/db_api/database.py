@@ -171,3 +171,4 @@ class Payments:
             if payment.get('date').split('-')[0] == datetime.now().strftime('%Y'):
                 amount += int(payment.get('amount'))
         return amount / 2
+
