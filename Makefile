@@ -10,20 +10,23 @@ endif
 # Target section and Global definitions
 # -----------------------------------------------------------------------------
 
-.PHONY: all clean install run deploy down
+.PHONY: all clean install run deploy down logs
 
-all: clean install run deploy down
+all: clean install run deploy down logs
 
 install: generate_dot_env
 	pip install --upgrade pip
 	pip install -r requirements.txt
 
 run:
-	python bot.py
+	docker-compose up -d --build
+
+logs:
+	docker-compose logs -f
 
 deploy: generate_dot_env
-	docker-compose build
-	docker-compose up -d
+	docker-compose build -f docker-compose.prod.yml
+	docker-compose up -d -f docker-compose.prod.yml
 
 down:
 	docker-compose down
