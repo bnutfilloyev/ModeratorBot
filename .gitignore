@@ -130,3 +130,6 @@ dmypy.json
 .vscode
 .idea
 payments.py
+mongo_test.py
+mongodb
+bot
