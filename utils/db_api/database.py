@@ -159,7 +159,8 @@ class Payments:
                 amount += int(payment.get('amount'))
         return amount / 2
 
-    async def get_yearly_amount(self, chat_id: str) -> float:
+    @staticmethod
+    async def get_yearly_amount(chat_id: str) -> float:
         """
         Return yearly amount
         """
