@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime, timedelta
 
-from utils.db_api.mongo import USERS, GROUPS, PAYMENTS
+from utils.db_api.mongo import GROUPS, PAYMENTS, USERS
 
 
 class Users:
@@ -90,14 +90,14 @@ class Groups:
         for group in GROUPS.find():
             yield group
 
-    async def set_groups(self, chat_id, group_name, admin_ids):
+    async def set_groups(self, chat_id, group_name, admin_ids) -> None:
         """
         Set groups for user
         """
         GROUPS.update_one({'chat_id': chat_id},
                           {'$set': {'group_name': group_name, 'admin_id': admin_ids}}, upsert=True)
 
-    async def remove_group(self, chat_id):
+    async def remove_group(self, chat_id) -> None:
         """
         Remove group
         """
@@ -112,9 +112,18 @@ class Groups:
 
         return GROUPS.find_one({'chat_id': chat_id}).get('group_name')
 
+    @staticmethod
+    def get_all_chat_ids(admin_id):
+        """
+        Return all chat ids for admin
+        """
+        for group in GROUPS.find({'admin_id': str(admin_id)}):
+            print(group)
+            yield group.get('chat_id')
+
 
 class Payments:
-    async def add_payment(self, user_id, chat_id, pay_method, amount):
+    async def add_payment(self, user_id, chat_id, pay_method, amount) -> None:
         """
         Add payment
         """
@@ -122,17 +131,42 @@ class Payments:
                              'chat_id': chat_id,
                              'method': pay_method,
                              'amount': amount,
-                             'date': datetime.now().strftime('%Y-%m-%d')})
+                             'date': datetime.now()})
 
-    async def get_daily_amount(self, chat_id):
+    async def get_daily_amount(self, chat_id: str) -> float:
         """
-        Return daily amount
+        Return yesterday amount
         """
         amount = 0
         if PAYMENTS.find_one({'chat_id': chat_id}) is None:
             return amount
-        for payment in PAYMENTS.find(
-                {'chat_id': chat_id, 'date': {'$gte': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')}}):
-            amount += int(payment.get('amount'))
+        for payment in PAYMENTS.find({'chat_id': chat_id}):
+            print(payment.get('date'))
+            # if payment.get('date').split('-')[2] == str(timedelta(days=1))[:2]:
+            #     amount += int(payment.get('amount'))
         return amount / 2
 
+    @staticmethod
+    async def get_monthly_amount(chat_id: str) -> float:
+        """
+        Return monthly amount
+        """
+        amount = 0
+        if PAYMENTS.find_one({'chat_id': chat_id}) is None:
+            return amount
+        for payment in PAYMENTS.find({'chat_id': chat_id}):
+            if payment.get('date').split('-')[1] == datetime.now().strftime('%m'):
+                amount += int(payment.get('amount'))
+        return amount / 2
+
+    async def get_yearly_amount(self, chat_id: str) -> float:
+        """
+        Return yearly amount
+        """
+        amount = 0
+        if PAYMENTS.find_one({'chat_id': chat_id}) is None:
+            return amount
+        for payment in PAYMENTS.find({'chat_id': chat_id}):
+            if payment.get('date').split('-')[0] == datetime.now().strftime('%Y'):
+                amount += int(payment.get('amount'))
+        return amount / 2
