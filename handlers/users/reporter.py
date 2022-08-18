@@ -9,7 +9,7 @@ payments = Payments()
 groups = Groups()
 
 
-@dp.message_handler(Command('report'))
+@dp.message_handler(Command('report'), state='*')
 async def reporter(msg: types.Message):
     await msg.answer(
         text="🖥Hisobotlarni ko'rish uchun bosing.\n"
