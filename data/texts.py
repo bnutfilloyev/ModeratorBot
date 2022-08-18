@@ -25,4 +25,6 @@ texts = {
 
     'free_plan': "<b>⭐️ Bepul tarifini tanladingiz.</b>\n\n"
                  "<i>Bu tarif sizga 1 kun davomida guruhdan <b>bepul</b> foydalanish imkonini beradi.💥🔥</i>"
+
+
 }

@@ -14,7 +14,7 @@ from utils.db_api.mongo import MESSAGE
 users = Users()
 
 
-@dp.message_handler(IsGroup())
+@dp.message_handler(IsGroup(), state='*')
 async def checker_handler(message: types.Message):
     if await users.get_user_status(message.from_user.id, str(message.chat.id)) == 'active':
         return

@@ -39,7 +39,10 @@ async def bot_start(message: types.Message, state: FSMContext):
         await users.set_base_info(user_id=message.from_user.id, chat_id=payload, name=message.from_user.full_name)
 
     free_plan = await users.use_free_plan(user_id=message.from_user.id, chat_id=payload)
-    await message.answer(_(texts['choose_plan']), reply_markup=await plans_button(free_plan))
+    plan_text = texts['choose_plan']
+    if free_plan:
+        plan_text += "\n\n🚀 Bepul - botdan test sifatida foydalanib ko'ring"
+    await message.answer(plan_text, reply_markup=await plans_button(free_plan))
 
 
 @dp.callback_query_handler(group_name_button.filter())
@@ -53,4 +56,7 @@ async def group_name_button_callback(call: types.CallbackQuery, callback_data: d
                                   name=call.from_user.full_name)
 
     free_plan = await users.use_free_plan(user_id=call.from_user.id, chat_id=callback_data['chat_id'])
-    await call.message.edit_text(text=_(texts['choose_plan']), reply_markup=await plans_button(free_plan))
+    plan_text = texts['choose_plan']
+    if free_plan:
+        plan_text += "\n\n🚀 Bepul - botdan test sifatida foydalanib ko'ring"
+    await call.message.edit_text(plan_text, reply_markup=await plans_button(free_plan))

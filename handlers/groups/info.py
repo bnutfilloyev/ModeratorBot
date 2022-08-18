@@ -3,7 +3,7 @@ from filters import AdminFilter
 from loader import dp, bot
 
 
-@dp.message_handler(AdminFilter(), commands=['info'])
+@dp.message_handler(AdminFilter(), commands=['info'], state='*')
 async def add_groups(message: types.Message):
     await message.delete()
     await bot.send_message(message.from_user.id,
