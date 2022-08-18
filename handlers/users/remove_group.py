@@ -11,7 +11,7 @@ from utils.db_api.database import Groups
 groups = Groups()
 
 
-@dp.message_handler(AdminFilter(), Command('removegroup'))
+@dp.message_handler(AdminFilter(), Command('removegroup'), state='*')
 async def add_group(message: types.Message):
     await message.answer("O'chirmoqchi bo'lgan guruhni tanlang.", reply_markup=await group_button(groups.get_groups()))
     await RemoveGroup.GetGroupName.set()

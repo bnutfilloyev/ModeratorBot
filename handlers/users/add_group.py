@@ -13,7 +13,7 @@ _ = i18n.lazy_gettext
 groups = Groups()
 
 
-@dp.message_handler(IsPrivate(), Command('addgroup'))
+@dp.message_handler(IsPrivate(), Command('addgroup'), state='*')
 async def add_group(message: Message):
     await message.answer(_(texts['get_group_name']))
     await AddGroup.GetGroupName.set()

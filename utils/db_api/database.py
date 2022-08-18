@@ -1,5 +1,4 @@
-import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from utils.db_api.mongo import GROUPS, PAYMENTS, USERS
 
@@ -159,6 +158,32 @@ class Payments:
                 amount += int(payment.get('amount'))
         return amount / 2
 
+    async def get_daily_amount(self, chat_id: str) -> float:
+        """
+        Return yesterday amount
+        """
+        amount = 0
+        if PAYMENTS.find_one({'chat_id': chat_id}) is None:
+            return amount
+        for payment in PAYMENTS.find({'chat_id': chat_id}):
+            print(payment.get('date'))
+            # if payment.get('date').split('-')[2] == str(timedelta(days=1))[:2]:
+            #     amount += int(payment.get('amount'))
+        return amount * 0.7
+
+    @staticmethod
+    async def get_monthly_amount(chat_id: str) -> float:
+        """
+        Return monthly amount
+        """
+        amount = 0
+        if PAYMENTS.find_one({'chat_id': chat_id}) is None:
+            return amount
+        for payment in PAYMENTS.find({'chat_id': chat_id}):
+            if payment.get('date').split('-')[1] == datetime.now().strftime('%m'):
+                amount += int(payment.get('amount'))
+        return amount * 0.7
+
     @staticmethod
     async def get_yearly_amount(chat_id: str) -> float:
         """
@@ -170,5 +195,4 @@ class Payments:
         for payment in PAYMENTS.find({'chat_id': chat_id}):
             if payment.get('date').split('-')[0] == datetime.now().strftime('%Y'):
                 amount += int(payment.get('amount'))
-        return amount / 2
-
+        return amount * 0.7

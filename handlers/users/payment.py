@@ -21,7 +21,7 @@ async def payment(pay_method, plan_method):
     if plan_method == 'monthly':
         prices = [types.LabeledPrice(label='30 kunlik', amount=2000000)]
 
-    if plan_method == 'daily':
+    if plan_method == 'weekly':
         prices = [types.LabeledPrice(label='7 kunlik', amount=700000)]
 
     return token, prices
@@ -31,21 +31,15 @@ async def payment(pay_method, plan_method):
 async def pay_button_callback(call: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         await user.update_user(call.from_user.id, data['method'], data['days'], data['chat_id'])
-        print("Message ID: ", call.from_user.id)
-        print("Chat ID: ", data['chat_id'])
         await bot.restrict_chat_member(data['chat_id'], call.from_user.id, can_send_messages=True)
-        print("Working ... 1")
         invite_link = await bot.export_chat_invite_link(data['chat_id'])
         join_btn = types.InlineKeyboardMarkup(
             inline_keyboard=[
                 [types.InlineKeyboardButton(text='Guruhga qaytish', url=invite_link)]
             ]
         )
-        print("Working ... 2")
         await call.message.edit_text(text="Tabriklaymiz, guruhga qaytishingiz mumkin!🥳")
-        print("Working ... 3")
         await call.message.edit_reply_markup(reply_markup=join_btn)
-        print("Working ... 4")
 
 
 @dp.callback_query_handler(pay_button.filter())

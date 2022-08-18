@@ -21,6 +21,6 @@ services:
             MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
             MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
             MONGODB_DATA_DIR: /data/db
-            MONDODB_LOG_DIR: /dev/null
+            MONGODB_LOG_DIR: /dev/null
         volumes:
             - ./mongodb/data:/data/db

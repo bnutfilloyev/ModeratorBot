@@ -16,7 +16,7 @@ groups = Groups()
 users = Users()
 
 
-@dp.message_handler(IsPrivate(), CommandStart())
+@dp.message_handler(IsPrivate(), CommandStart(), state="*")
 async def bot_start(message: types.Message, state: FSMContext):
     args = message.get_args()
     await message.answer(_(texts['welcome']))
