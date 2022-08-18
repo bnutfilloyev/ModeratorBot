@@ -130,7 +130,33 @@ class Payments:
                              'chat_id': chat_id,
                              'method': pay_method,
                              'amount': amount,
-                             'date': datetime.now().strftime('%Y-%m-%d')})
+                             'date': datetime.now()})
+
+    async def get_daily_amount(self, chat_id: str) -> float:
+        """
+        Return yesterday amount
+        """
+        amount = 0
+        if PAYMENTS.find_one({'chat_id': chat_id}) is None:
+            return amount
+        for payment in PAYMENTS.find({'chat_id': chat_id}):
+            print(payment.get('date'))
+            # if payment.get('date').split('-')[2] == str(timedelta(days=1))[:2]:
+            #     amount += int(payment.get('amount'))
+        return amount / 2
+
+    @staticmethod
+    async def get_monthly_amount(chat_id: str) -> float:
+        """
+        Return monthly amount
+        """
+        amount = 0
+        if PAYMENTS.find_one({'chat_id': chat_id}) is None:
+            return amount
+        for payment in PAYMENTS.find({'chat_id': chat_id}):
+            if payment.get('date').split('-')[1] == datetime.now().strftime('%m'):
+                amount += int(payment.get('amount'))
+        return amount / 2
 
     async def get_daily_amount(self, chat_id: str) -> float:
         """
