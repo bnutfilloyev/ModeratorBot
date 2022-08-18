@@ -25,11 +25,11 @@ logs:
 	docker-compose logs -f
 
 deploy: generate_dot_env
-	docker-compose build -f docker-compose.prod.yml
-	docker-compose up -d -f docker-compose.prod.yml
+	docker-compose -f docker-compose.prod.yml build
+	docker-compose -f docker-compose.prod.yml up -d
 
 down:
-	docker-compose down
+	docker-compose -f docker-compose.prod.yml down
 
 generate_dot_env:
 	@if [[ ! -e .env ]]; then \

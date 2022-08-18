@@ -6,7 +6,7 @@ from filters import IsGroup
 from loader import dp
 
 
-@dp.message_handler(IsGroup(), CommandStart())
+@dp.message_handler(IsGroup(), CommandStart(), state='*')
 async def bot_start(msg: types.Message):
     await msg.reply(texts['start_group'])
 
