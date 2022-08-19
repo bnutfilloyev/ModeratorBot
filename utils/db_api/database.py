@@ -32,7 +32,9 @@ class Users:
         """
         if pay_method == 'free':
             USERS.update_one({'user_id': user_id, 'chat_id': chat_id},
-                             {'$set': {'use_free_plan': False, 'days': int(days)}})
+                             {'$set': {'use_free_plan': False,
+                                       'days': int(days),
+                                       'status': 'active'}}, upsert=True)
             return
 
         if USERS.find_one({'user_id': user_id, 'chat_id': chat_id}).get('days') is None:

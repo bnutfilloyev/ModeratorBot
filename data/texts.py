@@ -2,9 +2,9 @@ texts = {
     'welcome': "🌟 Botga xush kelibsiz!\n",
 
     "choose_plan": "<b>Guruhdan foydalanish uchun quyidagi tariflar mavjud. Iltimos tanlang!</b>\n\n"
-                   "<b>1️⃣ kun</b> - 2000 so'm\n"
-                   "<b>7️⃣ kun</b> - 7000 so'm\n"
-                   "<b>3️⃣0️⃣ kun</b> - 20000 so'm\n\n",
+                   "<b>1️⃣ kun</b> - <i>2000 so'm</i>\n"
+                   "<b>7️⃣ kun</b> - <i>7000 so'm</i>\n"
+                   "<b>3️⃣0️⃣ kun</b> - <i>20000 so'm</i>\n\n",
 
     'payment_method': "Siz {day} kunlik tarifni tanladingiz, to'lovni amalga oshirish uchun tanlang.",
 
@@ -25,6 +25,5 @@ texts = {
 
     'free_plan': "<b>⭐️ Bepul tarifini tanladingiz.</b>\n\n"
                  "<i>Bu tarif sizga 1 kun davomida guruhdan <b>bepul</b> foydalanish imkonini beradi.💥🔥</i>"
-
 
 }

@@ -21,7 +21,7 @@ async def plans_button(free_plan=False):
     ])
 
     if free_plan:
-        markup.insert(types.InlineKeyboardButton(text="⭐️ Bepul", callback_data=plan_button.new(method='free', days=1)))
+        markup.insert(types.InlineKeyboardButton(text="⭐️ Bepul", callback_data=plan_button.new(method='free', days=2)))
     return markup
 
 

@@ -25,7 +25,6 @@ async def checker_handler(message: types.Message):
 
     await message.delete()
     for msg in MESSAGE.find({'chat_id': str(message.chat.id)}):
-        print(msg)
         try:
             await bot.delete_message(msg['chat_id'], msg['message_id'])
         except Exception as e:

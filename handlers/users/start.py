@@ -41,7 +41,8 @@ async def bot_start(message: types.Message, state: FSMContext):
     free_plan = await users.use_free_plan(user_id=message.from_user.id, chat_id=payload)
     plan_text = texts['choose_plan']
     if free_plan:
-        plan_text += "\n\n🚀 Bepul - botdan test sifatida foydalanib ko'ring"
+        plan_text += "<i>-</i>" * 50
+        plan_text += "\n\n<b>🚀 Bepul </b>- botdan test sifatida foydalanib ko'ring"
     await message.answer(plan_text, reply_markup=await plans_button(free_plan))
 
 
@@ -58,5 +59,6 @@ async def group_name_button_callback(call: types.CallbackQuery, callback_data: d
     free_plan = await users.use_free_plan(user_id=call.from_user.id, chat_id=callback_data['chat_id'])
     plan_text = texts['choose_plan']
     if free_plan:
+        plan_text += "<i>-</i>" * 50
         plan_text += "\n\n🚀 Bepul - botdan test sifatida foydalanib ko'ring"
     await call.message.edit_text(plan_text, reply_markup=await plans_button(free_plan))
